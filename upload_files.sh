@@ -1,10 +1,13 @@
 #!/bin/bash
 
+# This is an attempt to copy CRAM and CRAI files from a presigned URL to
+# Google bucket named commons-demo.
 
 while read p; do
-    FILENAME=$(echo "$p" | cut -b89-98)
-    echo $FILENAME
+    FOLDERNAME=$(echo "$p" | cut -b89-98)
+    echo $FOLDERNAME
     URL=$(echo "$p")
     echo $URL
-     curl "{$URL}" | gsutil cp - gs://commons-demo/xenon/{$FILENAME}
+    # Stream the output of curl to gsutil.
+    curl "{$URL}" | gsutil cp - gs://commons-demo/xenon/{$FOLDERNAME}
 done < $1
