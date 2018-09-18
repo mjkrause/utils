@@ -2,6 +2,9 @@
 
 
 while read p; do
-    echo "$p" | cut -b89-98
-done <download-links.txt
-
+    FILENAME=$(echo "$p" | cut -b89-98)
+    echo $FILENAME
+    URL=$(echo "$p")
+    echo $URL
+     curl "{$URL}" | gsutil cp - gs://commons-demo/xenon/{$FILENAME}
+done < $1
