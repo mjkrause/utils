@@ -34,7 +34,7 @@ cd files_to_process
 echo "Current directory is $(pwd)"
 # Create smaller files, each with $num_procs lines. All files created by
 # split start with "x". See split --help.
-split -l $num_procs $1
+split --lines=$num_procs $1
 
 counter=0  # counts all processed files
 
@@ -79,21 +79,24 @@ for f in x*; do
 	    #echo $objectname
 	    
     	    # Stream the output of curl to gsutil.
-	    curl "${url}" | gsutil cp - gs://commons-demo/$fullstack_name/$objectname &
-	    pids[${i}]=$!
-	    echo "Started processing PID $pids[${i}]..."
+	    for k in $num_procs; do
+		curl "${url}" | gsutil cp - gs://commons-demo/$fullstack_name/$objectname &
+		pids[${i}]=$!
+		echo "Started processing PID $pids[${i}]..."
+	    done
+
+            # Wait for all processes to finish before iterating.
+	    for pid in ${pids[*]}; do
+		echo "Waiting for all $num_cores processes to finish..."
+		wait $pid
+		sleep 1
+	    done  # for
+	    
 	    echo "Copying $objectname to Google bucket /commons-demo"
 	    sleep 1
 	fi
 	
     done < $f  # while
-    
-    # Wait for all processes to finish before iterating.
-    for pid in ${pids[*]}; do
-	echo "Waiting for all $num_cores processes to finish..."
-	wait $pid
-	sleep 1
-    done  # for
 
     echo "All $num_procs processes have finished. Next iteration..."
 
