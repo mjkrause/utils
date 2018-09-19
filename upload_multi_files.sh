@@ -58,7 +58,7 @@ while read url; do
 	#echo $url
 	# Stream the output of curl to gsutil.
 	#curl "${url}" | gsutil -m cp -I gs://commons-demo/xenon2/$objectname
-	curl "${URL}" | gsutil cp - gs://commons-demo/xenon2/$objectname
+	curl "${url}" | gsutil cp - gs://commons-demo/xenon2/$objectname &
     fi
     #sleep 1
     
