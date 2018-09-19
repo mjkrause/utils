@@ -2,12 +2,10 @@
 
 # DCCPC End-of-Pilot phase demo in Oct 2018.
 #
-# This script copies files from Seven Bridges located in an AWS S3 bucket to
-# a Google bucket. I had been given a list of presigned URLs that point and
-# give access to these files.
+# The script copies files from the full stacks (represented for instance by
+# presigned URLs to the location or DOS GUIDs) to a Google bucket
+# gs://commons-demo.
 
-# This is an attempt to copy CRAM and CRAI files from a presigned URL to
-# Google bucket named commons-demo.
 
 # INPUTS:
 #   $1: a text file with presigned URLs, one URL per line
@@ -18,10 +16,13 @@
 #       with whatever name you use exists (this script isn't checking for it)
 
 # Invoke like so:
-#   ./upload_files.sh file_with_urls.txt gtex-wgs.txt $fullstack_name
+#   ./upload_files.sh file_with_links.txt gtex-wgs.txt $fullstack_name
 
-
-num_cores=grep -c ^processor /proc/cpuinfo
+# Let the number of cores be the number of processes to process simultaneously
+# to avoid machine overloading.
+num_procs=grep -c ^processor /proc/cpuinfo  
+num_files=$( cat $1 | wc -l)  # total number of files to process
+    
 counter=0
 
 while read url; do
@@ -62,15 +63,25 @@ while read url; do
 	# Get line number of that file in `gtex-wgs.tsv`
 	echo "Copying $objectname to Google bucket /commons-demo"
 	#echo $url
-	# Stream the output of curl to gsutil.
-	curl "${url}" | gsutil cp - gs://commons-demo/$fullstack_name/$objectname &
+	
+	# Run one copy process per core at a time. Run processes and store
+	# pids in array.
+	for i in $num_procs; do
+    	    # Stream the output of curl to gsutil.
+	    curl "${url}" | gsutil cp - gs://commons-demo/$fullstack_name/$objectname &
+	    pids[${i}]=$!
+	done
+
+	# Wait for all processes to finish before iterating.
+	for pid in ${pids[*]}; do
+	    echo "Waiting for PID $pid to finish..."
+	    wait $pid
+	done
     fi
     #sleep 1
     
 done < $1
 
 echo "Number of files to analyze by $fullstack_name: $counter"
-
-
 
 
