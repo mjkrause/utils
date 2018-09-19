@@ -41,6 +41,7 @@ counter=0  # counts all processed files
 for f in x*; do
     echo "Processing $f file..."
 
+    proc_counter=0
     # Run processes and store PIDs in array.
     while read url; do
 
@@ -73,15 +74,16 @@ for f in x*; do
 
 	# Check whether the line contains string fullstack_name, and if so,
 	# pass the objectname to copy it to the Google bucket.
-	if [[ $matched_line == *$fullstack_name* || $matched_line == *"All"* ]]; then
+	if [[ $matched_line == *Xenon* || $matched_line == *"All"* ]]; then
 	    #echo $matched_line"\n"
 	    counter=$((counter+1))
+	    proc_counter=$((counter+1))
 	    #echo $objectname
 	    
     	    # Stream the output of curl to gsutil.
 	    (curl "${url}" | gsutil cp - gs://commons-demo/$fullstack_name/$objectname) &
-	    pids[${i}]=$!
-	    echo "Started processing PID $pids[${i}]..."
+	    pids[${proc_counter}]=$!
+	    echo "Started processing PID $pids[${proc_counter}]..."
 	    
 	    echo "Copying $objectname to Google bucket /commons-demo"
 	    sleep 1
