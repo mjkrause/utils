@@ -32,67 +32,64 @@ echo "Will process $num_files"
 mkdir -p files_to_process
 cd files_to_process
 echo "Current directory is $(pwd)"
-# Create smaller files, each with $num_procs lines. See split --help.
+# Create smaller files, each with $num_procs lines. All files created by
+# split start with "x". See split --help.
 split -l $num_procs $1
 
 counter=0
 
 for f in x*; do
     echo "Processing $f file.."
-
+    # Run one copy process per core at a time. Run processes and store
+    # pids in array.
     while read url; do
-
-	# Run one copy process per core at a time. Run processes and store
-	# pids in array.
-	for i in $num_procs; do
-
-	    # We want the same base name for cram and crai files, they should only
-	    # differ in their file extension. This is a crude way of achieving this.
-	    if [[ $url = *"crai"* ]]; then
-		objectname=$( echo "$url" | cut -b84-123 )
-	    else
-		objectname=$( echo "$url" | cut -b84-118 )
-	    fi
-	    #echo $objectname
-	    
-	    # "objectname" has a substring ".recab". In order to string-match
-	    # objectname to strings in file "gtex-wgs.tsv" we need to
-	    # remove that substring by slicing.
-	    sub1=${objectname:0:24}
-	    sub2=${objectname:30}
-	    sub="$sub1$sub2"
-	    #echo "$sub"
-
-	    # Return (if any) the line number of objectname in the master file
-	    # "gtex-wgs.tsv", which is the second input argument to this script.
-	    line_num=$(sed -n "/.*$sub.*/=" $2)
-	    #echo $line_num
-
-	    # Use line number to retrieve the line in the master file (second input
-	    # argument), which corresponds to the the file in objectname.
-	    matched_line=$(sed -n -e "$line_num"p $2)
-	    #echo $matched_line"\n"
-
-	    # Check whether the line contains string fullstack_name, and if so,
-	    # pass the objectname to copy it to the Google bucket.
-	    if [[ $matched_line == *$fullstack_name* || $matched_line == *"All"* ]]; then
-		#echo $matched_line"\n"
-		counter=$((counter+1))
-		#echo $objectname
-
-		# Get line number of that file in `gtex-wgs.tsv`
-		echo "Copying $objectname to Google bucket /commons-demo"
-		#echo $url
-		
-    		# Stream the output of curl to gsutil.
-		curl "${url}" | gsutil cp - gs://commons-demo/$fullstack_name/$objectname &
-		pids[${i}]=$!
-		echo "Started processing PID $pids[${i}]..."
-	    fi
-	done  # for
 	
-	#sleep 1
 
+	# We want the same base name for cram and crai files, they should only
+	# differ in their file extension. This is a crude way of achieving this.
+	if [[ $url = *"crai"* ]]; then
+	    objectname=$( echo "$url" | cut -b84-123 )
+	else
+	    objectname=$( echo "$url" | cut -b84-118 )
+	fi
+	#echo $objectname
+	
+	# "objectname" has a substring ".recab". In order to string-match
+	# objectname to strings in file "gtex-wgs.tsv" we need to
+	# remove that substring by slicing.
+	sub1=${objectname:0:24}
+	sub2=${objectname:30}
+	sub="$sub1$sub2"
+	#echo "$sub"
+
+	# Return (if any) the line number of objectname in the master file
+	# "gtex-wgs.tsv", which is the second input argument to this script.
+	line_num=$(sed -n "/.*$sub.*/=" $2)
+	#echo $line_num
+
+	# Use line number to retrieve the line in the master file (second input
+	# argument), which corresponds to the the file in objectname.
+	matched_line=$(sed -n -e "$line_num"p $2)
+	#echo $matched_line"\n"
+
+	# Check whether the line contains string fullstack_name, and if so,
+	# pass the objectname to copy it to the Google bucket.
+	if [[ $matched_line == *$fullstack_name* || $matched_line == *"All"* ]]; then
+	    #echo $matched_line"\n"
+	    counter=$((counter+1))
+	    #echo $objectname
+
+	    # Get line number of that file in `gtex-wgs.tsv`
+	    echo "Copying $objectname to Google bucket /commons-demo"
+	    #echo $url
+	    
+    	    # Stream the output of curl to gsutil.
+	    curl "${url}" | gsutil cp - gs://commons-demo/$fullstack_name/$objectname &
+	    pids[${i}]=$!
+	    echo "Started processing PID $pids[${i}]..."
+	fi
+    
+    #sleep 1
 	
     done < $f  # while
     
