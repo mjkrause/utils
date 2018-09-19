@@ -23,7 +23,7 @@ bucket_name=commons-demo
 # to process simultaneously to avoid machine overloading.
 num_cores=$(grep -c ^processor /proc/cpuinfo)
 echo "Detected $num_cores on machine"
-num_procs=$(($num_cores * 1))
+num_procs=$(($num_cores * 4))
 echo "Will process $num_procs processes simultaneously"
 num_files=$(cat $1 | wc -l)  # total number of files to process
 echo "Will process $num_files"
