@@ -18,9 +18,10 @@
 # Invoke like so:
 #   ./upload_files.sh file_with_links.txt gtex-wgs.txt $fullstack_name
 
-# Let the number of cores be the number of processes to process simultaneously
-# to avoid machine overloading.
-num_procs=$(grep -c ^processor /proc/cpuinfo)
+# Let the number of cores be a gauge to the number of processes
+# to process simultaneously to avoid machine overloading.
+num_cores=$(grep -c ^processor /proc/cpuinfo)
+num_procs=$(($num_cores * $num_cores))
 num_files=$(cat $1 | wc -l)  # total number of files to process
     
 counter=0
@@ -79,9 +80,11 @@ while read url; do
     
     # Wait for all processes to finish before iterating.
     for pid in ${pids[*]}; do
-	echo "Waiting for PID $pid to finish..."
+	echo "Waiting for all processes to finish..."
 	wait $pid
     done  # for
+
+    echo "All $num_procs processes have finished. Next iteration..."
      
 done < $1  # while
 
