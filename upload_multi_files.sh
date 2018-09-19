@@ -43,7 +43,6 @@ for f in x*; do
 
     # Run processes and store PIDs in array.
     while read url; do
-	
 
 	# We want the same base name for cram and crai files, they should only
 	# differ in their file extension. This is a crude way of achieving this.
@@ -84,9 +83,8 @@ for f in x*; do
 	    pids[${i}]=$!
 	    echo "Started processing PID $pids[${i}]..."
 	    echo "Copying $objectname to Google bucket /commons-demo"
+	    sleep 1
 	fi
-    
-    #sleep 1
 	
     done < $f  # while
     
@@ -94,6 +92,7 @@ for f in x*; do
     for pid in ${pids[*]}; do
 	echo "Waiting for all $num_cores processes to finish..."
 	wait $pid
+	sleep 1
     done  # for
 
     echo "All $num_procs processes have finished. Next iteration..."
