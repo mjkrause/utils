@@ -20,8 +20,8 @@
 
 # Let the number of cores be the number of processes to process simultaneously
 # to avoid machine overloading.
-num_procs=grep -c ^processor /proc/cpuinfo  
-num_files=$( cat $1 | wc -l)  # total number of files to process
+num_procs=$(grep -c ^processor /proc/cpuinfo)
+num_files=$(cat $1 | wc -l)  # total number of files to process
     
 counter=0
 
