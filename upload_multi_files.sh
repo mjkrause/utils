@@ -37,7 +37,7 @@ split -l $num_procs $1
 
 counter=0
 
-for f in files_to_process/x*; do
+for f in x*; do
     echo "Processing $f file.."
 
     while read url; do
