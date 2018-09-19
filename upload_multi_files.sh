@@ -36,12 +36,12 @@ echo "Current directory is $(pwd)"
 # split start with "x". See split --help.
 split -l $num_procs $1
 
-counter=0
+counter=0  # counts all processed files
 
 for f in x*; do
-    echo "Processing $f file.."
-    # Run one copy process per core at a time. Run processes and store
-    # pids in array.
+    echo "Processing $f file..."
+
+    # Run processes and store PIDs in array.
     while read url; do
 	
 
@@ -78,15 +78,12 @@ for f in x*; do
 	    #echo $matched_line"\n"
 	    counter=$((counter+1))
 	    #echo $objectname
-
-	    # Get line number of that file in `gtex-wgs.tsv`
-	    echo "Copying $objectname to Google bucket /commons-demo"
-	    #echo $url
 	    
     	    # Stream the output of curl to gsutil.
 	    curl "${url}" | gsutil cp - gs://commons-demo/$fullstack_name/$objectname &
 	    pids[${i}]=$!
 	    echo "Started processing PID $pids[${i}]..."
+	    echo "Copying $objectname to Google bucket /commons-demo"
 	fi
     
     #sleep 1
@@ -104,7 +101,7 @@ for f in x*; do
 done  # for outer
 
 cd ..
-rm -rf files_to_copy
+rm -rf files_to_process
 
 echo "Copied $counter files to bucket $bucket_name"
 
