@@ -79,24 +79,22 @@ for f in x*; do
 	    #echo $objectname
 	    
     	    # Stream the output of curl to gsutil.
-	    for k in $num_procs; do
-		curl "${url}" | gsutil cp - gs://commons-demo/$fullstack_name/$objectname &
-		pids[${i}]=$!
-		echo "Started processing PID $pids[${i}]..."
-	    done
-
-            # Wait for all processes to finish before iterating.
-	    for pid in ${pids[*]}; do
-		echo "Waiting for all $num_cores processes to finish..."
-		wait $pid
-		sleep 1
-	    done  # for
+	    (curl "${url}" | gsutil cp - gs://commons-demo/$fullstack_name/$objectname) &
+	    pids[${i}]=$!
+	    echo "Started processing PID $pids[${i}]..."
 	    
 	    echo "Copying $objectname to Google bucket /commons-demo"
 	    sleep 1
 	fi
 	
     done < $f  # while
+    
+    # Wait for all processes to finish before iterating.
+    for pid in ${pids[*]}; do
+	echo "Waiting for all $num_cores processes to finish..."
+	wait $pid
+	sleep 1
+    done  # for
 
     echo "All $num_procs processes have finished. Next iteration..."
 
