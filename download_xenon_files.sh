@@ -81,9 +81,8 @@ for f in x*; do
 	    #echo $matched_line"\n"
 	    counter=$((counter+1))
 	    proc_counter=$((counter+1))
-	    #echo $objectname
 
-	    wget --continue --directory-prefix=$prefix $url
+	    wget --continue --directory-prefix=$prefix $url &
 	    pids[${proc_counter}]=$!
 	    echo "Started processing PID $pids[${proc_counter}]..."
 	    
