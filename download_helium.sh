@@ -5,4 +5,4 @@
 
 url=https://helium.commonsshare.org/dosapi/dataobjects
 
-curl -XGET --header "Authorization: Bearer $1" "$url/$2/"
+curl -v --header "Authorization: Bearer $1" "$url/$2/"
