@@ -15,11 +15,11 @@
 #       name of the directory in bucket "commons-dev", so make sure a directory
 #       with whatever name you use exists (this script isn't checking for it)
 
-# Invoke like so:
+# Invoke (for example) like so:
 #   ./upload_files.sh file_with_links.txt gtex-wgs.txt $fullstack_name
 
 bucket_name=commons-demo
-core_multiplier=8
+core_multiplier=16
 # Let the number of cores be a gauge to the number of processes
 # to process simultaneously to avoid machine overloading.
 num_cores=$(grep -c ^processor /proc/cpuinfo)
