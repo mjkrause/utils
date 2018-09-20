@@ -9,36 +9,35 @@
 #   $1: path to the folder the files reside in
 
 
-num_files=$(cat $1 | wc -l)  # total number of files to process
+num_files=$(ls $1 | wc -l)  # total number of files to process
 echo "Renaming $num_files files..."
 
 counter=0  # counts all processed files
 
-while read url; do
+for filepath in $1/*.*; do
+
+    echo "File path: $filepath"
+
+    filename=$(echo "$filepath" | sed "s/.*\///")
 
     # We want the same base name for cram and crai files, they should only
     # differ in their file extension. This is a crude way of achieving this.
     if [[ $filename = *"crai"* ]]; then
-	objectname=$( echo "$filename" | cut -b84-123 )
+	objectname=$( echo "$filename" | cut -b38-77 )
     else
-	objectname=$( echo "$filename" | cut -b84-118 )
+	objectname=$( echo "$filename" | cut -b38-72 )
     fi
 
     counter=$((counter+1))
+
+    echo "Old file name: $filename"
+    echo "New file name: $objectname"
     
     # Rename file in-place.
-    mv "${filename}" "${objectname}"
-    pids[${proc_counter}]=$!
+    mv "$1/$filename" "$1/$objectname"
 
     sleep 1
     
-done < $1  # while
-
-# Wait for all processes to finish before iterating.
-for pid in ${pids[*]}; do
-    echo "Waiting for all $num_cores processes to finish..."
-    wait $pid
-    sleep 1
-done  # for
+done
 
 echo "Renamed $counter file in folder $1"
