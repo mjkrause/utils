@@ -19,11 +19,12 @@
 #   ./upload_files.sh file_with_links.txt gtex-wgs.txt $fullstack_name
 
 bucket_name=commons-demo
+core_multiplier=8
 # Let the number of cores be a gauge to the number of processes
 # to process simultaneously to avoid machine overloading.
 num_cores=$(grep -c ^processor /proc/cpuinfo)
 echo "Detected $num_cores on machine"
-num_procs=$(($num_cores * 4))
+num_procs=$(($num_cores * $core_multiplier))
 echo "Will process $num_procs processes simultaneously"
 num_files=$(cat $1 | wc -l)  # total number of files to process
 echo "Will process $num_files"
@@ -81,7 +82,7 @@ for f in x*; do
 	    #echo $objectname
 	    
     	    # Stream the output of curl to gsutil.
-	    (curl "${url}" | gsutil cp - gs://commons-demo/$fullstack_name/$objectname) &
+	    (curl "${url}" | gsutil cp - gs://$bucket_name/$3/$objectname) &
 	    pids[${proc_counter}]=$!
 	    echo "Started processing PID $pids[${proc_counter}]..."
 	    
