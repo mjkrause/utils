@@ -23,29 +23,29 @@ strindex() {
 for filepath in $1/*.*; do
     echo "File path: $filepath"
 
-    filename=$(echo "$filepath" | sed "s/.*\///")
-    start=$(strindex "$filename" "GTEX")
+    oldname=$(echo "$filepath" | sed "s/.*\///")
+    start=$(strindex "$oldname" "GTEX")
     start=$((start+1))
-    echo "Start index of new filename: $start"
+    echo "Start index of new oldname: $start"
     # Use hard-coded length of two strings to get stop indices.
     stop_crai=$((start + 39))
     stop_cram=$((start + 34))
 
     # We want the same base name for cram and crai files, they should only
     # differ in their file extension. This is a crude way of achieving this.
-    if [[ $filename = *"crai"* ]]; then
-	objectname=$( echo "$filename" | cut -b$start-$stop_crai )
+    if [[ $oldname = *"crai"* ]]; then
+	newname=$( echo "$oldname" | cut -b$start-$stop_crai )
     else
-	objectname=$( echo "$filename" | cut -b$start-$stop_cram )
+	newname=$( echo "$oldname" | cut -b$start-$stop_cram )
     fi
 
     counter=$((counter+1))
 
-    echo "Old file name: $filename"
-    echo "New file name: $objectname"
+    echo "Old file name: $oldname"
+    echo "New file name: $newname"
     
     # Rename file in-place.
-    mv "$1/$filename" "$1/$objectname"
+    mv "$1/$oldname" "$1/$newname"
 
     sleep 1
     
