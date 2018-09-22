@@ -4,7 +4,14 @@
 #
 # The script downloads files from the full stacks (represented for instance by
 # presigned URLs to the location or DOS GUIDs) to the local system.
-
+#
+# Obtain the input file containing the presigned URLs to download the files
+# from the storage go to Fair4Cures'login https://f4c-accounts.sbgenomics.com,
+# select all files matching the search word "recab", and download links to those
+# files.
+#
+# Copy the input file with the download links for $1 to the VM like so:
+#   scp -i "/home/michael/.ssh/mkrause-dev-security.pem" xenon/download-links.txt ubuntu@ec2-18-232-188-223.compute-1.amazonaws.com:/home/ubuntu/dcppc
 
 # INPUTS:
 #   $1: a text file with presigned URLs, one URL per line
