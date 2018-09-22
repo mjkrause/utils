@@ -1,6 +1,10 @@
 #!/bin/bash
 
-# Writes file names in input directory to an output TSV files. 
+# Writes file names in input directory to an output TSV files.
+
+# (Computing a checksum is IO-bound, and parallelizing. When I tested it
+# on my local (8 cores) it  took 16 min for 6 files (3 CRAI, 3 CRAM) when
+# using GNU parallel, and 17 min when computing it sequentially.)
 
 # INPUTS:
 #   $1: (str) directory name
@@ -47,7 +51,6 @@ done  # for
 # Write arrays to file such that the first column is the file name,
 # second column is the MD5 checksum, and the third column is the file size.
 for  ((i=0; i<=$counter; i++)); do
-    echo $i
     # Get only the MD5 sum from the array element (i.e., drop the file path).
     md5=$(echo "${md5_array[i]}" | awk '{ print $1 }')
     printf '%s\t%s\t%s\n' "${filename[i]}" "${md5}" "${file_size[i]}" >> $2
