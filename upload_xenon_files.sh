@@ -4,7 +4,7 @@
 #
 # The script uploads CRAI and CRAM from a folder to a Google bucket.
 # (see https://cloud.google.com/storage/docs/gsutil/commands/cp for
-# details)
+
 
 # INPUTS:
 #   $1: path to the folder the files reside in (this will create a new
@@ -14,7 +14,7 @@
 start_time=$SECONDS
 num_files=$(ls $1 | wc -l)  # total number of files to process
 echo "Uploading $num_files files..."
-dest_bucket=gs://commons-demo/xenon_final
+dest_bucket=gs://commons-demo
 
 # Upload command.
 #   -m: upload multiple files (some for of parllel processing)
