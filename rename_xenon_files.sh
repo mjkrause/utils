@@ -21,12 +21,12 @@ strindex() {
 }
 
 for filepath in $1/*.*; do
-    echo "File path: $filepath"
+    #echo "File path: $filepath"
 
     oldname=$(echo "$filepath" | sed "s/.*\///")
     start=$(strindex "$oldname" "GTEX")
     start=$((start+1))
-    echo "Start index of new oldname: $start"
+    #echo "Start index of new oldname: $start"
     # Use hard-coded length of two strings to get stop indices.
     stop_crai=$((start + 39))
     stop_cram=$((start + 34))
@@ -41,8 +41,8 @@ for filepath in $1/*.*; do
 
     counter=$((counter+1))
 
-    echo "Old file name: $oldname"
-    echo "New file name: $newname"
+    #echo "Old file name: $oldname"
+    #echo "New file name: $newname"
     
     # Rename file in-place.
     mv "$1/$oldname" "$1/$newname"
