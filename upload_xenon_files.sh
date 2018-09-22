@@ -3,6 +3,8 @@
 # DCCPC End-of-Pilot phase demo in Oct 2018.
 #
 # The script uploads CRAI and CRAM from a folder to a Google bucket.
+# (see https://cloud.google.com/storage/docs/gsutil/commands/cp for
+# details)
 
 # INPUTS:
 #   $1: path to the folder the files reside in (this will create a new
