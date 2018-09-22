@@ -22,20 +22,14 @@ filename=()
 md5_array=()
 file_size=()
 
-getmd5() {
-    md5_array[$1]=$(md5sum $2) &
-    echo "${md5sum[$1]}"
-}
-
 for filepath in $1/*.*; do
 
     file_size[$counter]=$(stat --printf="%s" $filepath)
     # Extract file name from path.
     filename[$counter]=$(echo "$filepath" | sed "s/.*\///")
-    #getmd5 $counter $filepath
     md5_array[$counter]=$(md5sum $filepath)
     pids[$counter]=$!
-    echo "Started processing PID $!..."
+    echo "Started processing PID $pids[$counter]..."
 
     counter=$((counter+1))
 
@@ -57,6 +51,6 @@ for  ((i=0; i<=$counter; i++)); do
 done
 
 # Add header to TSV file.
-echo -e "GTEX ID\tMD5 CHECKSUM\tFILE SIZE" | cat - $2 > /tmp/out && mv /tmp/out $2
+echo -e "FILE ID\tMD5 CHECKSUM\tFILE SIZE (bytes)" | cat - $2 > /tmp/out && mv /tmp/out $2
 
 echo "Wrote $counter records to file $2"
