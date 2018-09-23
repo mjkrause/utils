@@ -17,9 +17,11 @@ echo "Uploading $num_files files..."
 dest_bucket=gs://commons-demo
 
 # Upload command.
-#   -m: upload multiple files (some for of parllel processing)
+#   -m: upload multiple files (some form of parllel processing)
 #   -r: recurse into $1
 gsutil -m cp -r $1 $dest_bucket
+# (as this is already parallel processed I don't let this command run
+# in the background)
 
 echo "...done uploading $num_files files to folder $1"
 
