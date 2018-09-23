@@ -25,4 +25,5 @@ echo $resp | python -m json.tool  # pretty-prints JSON
 
 download_url=$(echo $resp | jq -r '.urls[].url')
 
-wget --continue $download_url
+#wget --continue $download_url
+curl -L -O --header "Authorization: Bearer $1" "$download_url"
