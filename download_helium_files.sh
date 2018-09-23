@@ -21,6 +21,8 @@
 
 url=https://helium.commonsshare.org/dosapi/dataobjects
 
-resp=curl --header "Authorization: Bearer $1" "$url/$2/"
+resp=$(curl --header "Authorization: Bearer $1" "$url/$2/")
 
 echo $resp
+
+#curl -v --header "Authorization: Bearer $1" "$url/$2/"
