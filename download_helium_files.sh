@@ -23,4 +23,6 @@ url=https://helium.commonsshare.org/dosapi/dataobjects
 resp=$(curl --header "Authorization: Bearer $1" "$url/$2/")
 echo $resp | python -m json.tool  # pretty-prints JSON
 
-echo $resp | jq -r '.urls[].url'
+download_url=$(echo $resp | jq -r '.urls[].url')
+
+wget --continue $download_url
