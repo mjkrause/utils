@@ -20,12 +20,7 @@
 #curl -v --header "Authorization: Bearer $token" "https://helium.commonsshare.org/dosapi/dataobjects/cce38e8723a24ce38ec8f8d0fb1beddb/"
 
 url=https://helium.commonsshare.org/dosapi/dataobjects
-
 resp=$(curl --header "Authorization: Bearer $1" "$url/$2/")
-
-#echo $resp
-
-#echo $resp  | bat -p -l json  # pretty-prints JSON
 echo $resp  | python -m json.tool  # pretty-prints JSON
 
-#curl -v --header "Authorization: Bearer $1" "$url/$2/"
+echo $resp | jq '.urls.url|tonumber'
