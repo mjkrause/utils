@@ -25,6 +25,6 @@ resp=$(curl --header "Authorization: Bearer $1" "$url/$2/")
 
 #echo $resp
 
-echo $resp | | bat -p -l json  # pretty-prints JSON
+echo $resp | bat -p -l json  # pretty-prints JSON
 
 #curl -v --header "Authorization: Bearer $1" "$url/$2/"
