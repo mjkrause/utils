@@ -72,7 +72,7 @@ while read line; do
 
     echo $dos_guid
 
-    download_guid $gtex_filename $dos_guid $2 $3 &
+    download_guid $gtex_filename $dos_guid $2 $3
     echo "Number of files processed: $line_counter"
     
 done < $1
