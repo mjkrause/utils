@@ -52,7 +52,8 @@ function download_guid() {
 	    download_guids $1 $2 $3 $4  # recurse to retry
 	    retry_counter=$((retry_counter+=1))
 	else
-	    echo "Retried downloading $retry_counter times - file with DOS GUID $2 is corrupted"
+	    # Standard out in red color.
+	    echo "$(tput setaf 1)Retried downloading $retry_counter times - file with DOS GUID $2 is corrupted"
 	fi
     fi
 }
@@ -62,8 +63,7 @@ function download_guid() {
 #exec > >(tee -i $LOG_LOCATION/logfile.txt)
 exec > >(tee -i logfile.txt)
 exec 2>&1
-
-
+line_counter=1
 while read line; do
     echo $line
 
@@ -72,6 +72,7 @@ while read line; do
 
     echo $dos_guid
 
-    download_guid $gtex_filename $dos_guid $2 $3
-
+    download_guid $gtex_filename $dos_guid $2 $3 &
+    echo "Number of files processed: $line_counter"
+    
 done < $1
