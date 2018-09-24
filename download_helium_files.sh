@@ -15,15 +15,32 @@
 # INPUTS
 #  $1:  bearer token
 #  $2:  GUID
+#  $3:  destination path where files will be downloaded to
+
+# EXAMPLE:
+# curl -v --header "Authorization: Bearer $token" "https://helium.commonsshare.org/dosapi/dataobjects/cce38e8723a24ce38ec8f8d0fb1beddb/"
 
 
-#curl -v --header "Authorization: Bearer $token" "https://helium.commonsshare.org/dosapi/dataobjects/cce38e8723a24ce38ec8f8d0fb1beddb/"
+function download_guids() {
+    
+    url=https://helium.commonsshare.org/dosapi/dataobjects
+    resp=$(curl --header "Authorization: Bearer $1" "$url/$2/")
+    echo $resp | python -m json.tool  # pretty-prints JSON
 
-url=https://helium.commonsshare.org/dosapi/dataobjects
-resp=$(curl --header "Authorization: Bearer $1" "$url/$2/")
-echo $resp | python -m json.tool  # pretty-prints JSON
+    download_url=$(echo $resp | jq -r '.urls[].url')
 
-download_url=$(echo $resp | jq -r '.urls[].url')
+    curl -L -O --header "Authorization: Bearer $1" "$download_url"
 
-#wget --continue $download_url
-curl -L -O --header "Authorization: Bearer $1" "$download_url"
+}
+
+
+while read line; do
+    echo $line
+
+    dos_guid=$(echo $line | awk '{print $2}')
+
+    echo $dos_guid
+
+    download_guids $1 $dos_guid 
+
+done < $1
