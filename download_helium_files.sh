@@ -28,9 +28,9 @@ function download_guids() {
     echo $resp | python -m json.tool  # pretty-prints JSON
 
     download_url=$(echo $resp | jq -r '.urls[].url')
-
+    cd $3
     curl -L -O --header "Authorization: Bearer $1" "$download_url"
-
+    cd -;  # navigate back to original directory
 }
 
 
@@ -41,6 +41,6 @@ while read line; do
 
     echo $dos_guid
 
-    download_guids $1 $dos_guid 
+    download_guids $1 $dos_guid $3
 
 done < $1
