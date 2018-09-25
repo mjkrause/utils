@@ -52,31 +52,25 @@ function download_guid() {
 	if [ $retry_counter < 4 ]; then
 	    download_guids $1 $2 $3 $4 $retry_counter # recurse to retry
 	else
-	    # Standard out in red color.
-	    echo "$(tput setaf 1)Retried downloading $retry_counter times - file with DOS GUID $2 is corrupted"
+	    # Standard out in red color (and set it back to white).
+	    echo "$(tput setaf 1)Retried downloading $retry_counter times - file with DOS GUID $2 is corrupted$(tput setab 7)"
 	fi
     fi
 }
 
-Log output.
-LOG_LOCATION=/home/user/scripts/logs
-exec > >(tee -i $LOG_LOCATION/logfile.txt)
+# Need to export the function or parallel can't find it.
+export -f download_guid
+
+# Log output.
+#LOG_LOCATION=/home/user/scripts/logs
+#exec > >(tee -i $LOG_LOCATION/logfile.txt)
 exec > >(tee -i logfile.txt)
 exec 2>&1
-line_counter=1
-while read line; do
-    echo $line
 
-    gtex_filename=$(echo $line | awk '{print $1}')
-    dos_guid=$(echo $line | awk '{print $2}')
-    retry_counter=0
+retry_counter=0
+# Use GNU parallel to utilize core of machine effectively.
+parallel --bar --colsep '\t' download_guid {1} {2} $2 $3 $retry_counter :::: $1
+num_files_processed=$(cat $1 | wc -l)
+echo "Downloaded $num_files_processed."
 
-    echo $dos_guid
 
-    download_guid $gtex_filename $dos_guid $2 $3 $retry_counter
-    echo "Number of files processed: $line_counter"
-    line_counter=$((line_counter+=1))
-done < $1
-
-# cat $1 | parallel download_guid 
-# #parallel --colsep '\t' download_guid {1} {2} {3} {4} :::: $1
