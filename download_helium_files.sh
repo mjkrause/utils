@@ -53,7 +53,7 @@ function download_guid() {
 	    download_guids $1 $2 $3 $4 $retry_counter # recurse to retry
 	else
 	    # Standard out in red color (and set it back to white).
-	    echo "$(tput setaf 1)Retried downloading $retry_counter times - file with DOS GUID $2 is corrupted$(tput setab 7)"
+	    echo "$(tput setaf 1)Retried downloading $retry_counter times - file with DOS GUID $2 is corrupted$(tput setaf 7)"
 	fi
     fi
 }
@@ -70,7 +70,7 @@ line_counter=1
 retry_counter=0
 while read line; do
     # Print in green.
-    echo "$(tput setaf 2)Processing file $line$(tput setaf 0)"
+    echo "$(tput setaf 2)Processing file $line$(tput setaf 7)"
 
     gtex_filename=$(echo $line | awk '{print $1}')
     dos_guid=$(echo $line | awk '{print $2}')
@@ -84,5 +84,3 @@ while read line; do
 done < $1
 
 echo "Downloaded $line_counter files."
-
-
