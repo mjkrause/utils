@@ -35,6 +35,7 @@ function download_guid() {
     #$dos_guid=$2
     #$download_dir=$4
 
+    retry_counter=$5
     url=https://helium.commonsshare.org/dosapi/dataobjects
     resp=$(curl --header "Authorization: Bearer $3" "$url/$2/")
     echo $resp | python -m json.tool  # pretty-prints JSON
