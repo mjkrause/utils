@@ -47,7 +47,9 @@ function download_guid() {
     echo "Test checksum: $checksum_test"
     cd -;  # navigate back to original directory
     # If checksum of downloaded file doesn't match the real checksum, try again.
-    if ! [ $checksum_real = $checksum_test ]; then
+    if [ $checksum_real = $checksum_test ]; then
+	echo "sha256 checksums match"
+    else
 	retry_counter=$((retry_counter+=1))
 	if [ $retry_counter < 4 ]; then
 	    download_guids $1 $2 $3 $4 $retry_counter # recurse to retry
