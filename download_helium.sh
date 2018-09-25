@@ -44,8 +44,9 @@ function download_guid() {
     cd $4
     curl -L -O --header "Authorization: Bearer $3" "$download_url"
     checksum_test=$($(echo sha256sum $1) | awk '{ print $1 }')
-    echo "Test checksum: $checksum_test"
+    #echo "Test checksum: $checksum_test"
     cd -;  # navigate back to original directory
+
     # If checksum of downloaded file doesn't match the real checksum, try again.
     if ! [ $checksum_real = $checksum_test ]; then
 	retry_counter=$((retry_counter+=1))
