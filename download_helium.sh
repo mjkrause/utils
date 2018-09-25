@@ -50,7 +50,7 @@ function download_guid() {
     if ! [ $checksum_real = $checksum_test ]; then
 	retry_counter=$((retry_counter+=1))
 	if [ $retry_counter < 4 ]; then
-	    download_guids $1 $2 $3 $4 $retry_counter # recurse to retry
+	    download_guid $1 $2 $3 $4 $retry_counter # recurse to retry
 	else
 	    # Standard out in red color (and set it back to white).
 	    echo "$(tput setaf 1)Retried downloading $retry_counter times - file with DOS GUID $2 is corrupted$(tput setab 7)"
