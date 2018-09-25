@@ -71,7 +71,7 @@ exec 2>&1
 
 retry_counter=0
 # Use GNU parallel to utilize core of machine effectively.
-parallel --bar --colsep '\t' download_guid {1} {2} $2 $3 $retry_counter :::: $1
+parallel -j5 --bar --colsep '\t' download_guid {1} {2} $2 $3 $retry_counter :::: $1
 num_files_processed=$(cat $1 | wc -l)
 echo "Downloaded $num_files_processed."
 
