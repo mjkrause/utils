@@ -48,16 +48,16 @@ function download_guid() {
     #echo "Test checksum: $checksum_test"
     cd -;  # navigate back to original directory
 
-    # If checksum of downloaded file doesn't match the real checksum, try again.
-    if ! [ $checksum_real = $checksum_test ]; then
-	retry_counter=$((retry_counter+=1))
-	if [ $retry_counter < 4 ]; then
-	    download_guid $1 $2 $3 $4 $retry_counter # recurse to retry
-	else
-	    # Standard out in red color (and set it back to white).
-	    echo "$(tput setaf 1)Retried downloading $retry_counter times - file with DOS GUID $2 is corrupted$(tput setab 7)"
-	fi
-    fi
+    # # If checksum of downloaded file doesn't match the real checksum, try again.
+    # if ! [ $checksum_real = $checksum_test ]; then
+    # 	retry_counter=$((retry_counter+=1))
+    # 	if [ $retry_counter < 4 ]; then
+    # 	    download_guid $1 $2 $3 $4 $retry_counter # recurse to retry
+    # 	else
+    # 	    # Standard out in red color (and set it back to white).
+    # 	    echo "$(tput setaf 1)Retried downloading $retry_counter times - file with DOS GUID $2 is corrupted$(tput setab 7)"
+    # 	fi
+    # fi
 }
 
 # Need to export the function or parallel can't find it.
