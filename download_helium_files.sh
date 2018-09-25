@@ -29,12 +29,12 @@ function download_guid() {
     # $2:  DOS GUID
     # $3:  bearer token for access
     # $4:  destination directory for download
+    # $5:  retry_counter
 
     #$token=$3
     #$dos_guid=$2
     #$download_dir=$4
 
-    retry_counter=0 
     url=https://helium.commonsshare.org/dosapi/dataobjects
     resp=$(curl --header "Authorization: Bearer $3" "$url/$2/")
     echo $resp | python -m json.tool  # pretty-prints JSON
@@ -48,9 +48,9 @@ function download_guid() {
     cd -;  # navigate back to original directory
     # If checksum of downloaded file doesn't match the real checksum, try again.
     if ! [ $checksum_real = $checksum_test ]; then
+	retry_counter=$((retry_counter+=1))
 	if [ $retry_counter < 4 ]; then
-	    download_guids $1 $2 $3 $4  # recurse to retry
-	    retry_counter=$((retry_counter+=1))
+	    download_guids $1 $2 $3 $4 $retry_counter # recurse to retry
 	else
 	    # Standard out in red color.
 	    echo "$(tput setaf 1)Retried downloading $retry_counter times - file with DOS GUID $2 is corrupted"
@@ -58,9 +58,9 @@ function download_guid() {
     fi
 }
 
-# Log output.
-#LOG_LOCATION=/home/user/scripts/logs
-#exec > >(tee -i $LOG_LOCATION/logfile.txt)
+Log output.
+LOG_LOCATION=/home/user/scripts/logs
+exec > >(tee -i $LOG_LOCATION/logfile.txt)
 exec > >(tee -i logfile.txt)
 exec 2>&1
 line_counter=1
@@ -69,10 +69,14 @@ while read line; do
 
     gtex_filename=$(echo $line | awk '{print $1}')
     dos_guid=$(echo $line | awk '{print $2}')
+    retry_counter=0
 
     echo $dos_guid
 
-    download_guid $gtex_filename $dos_guid $2 $3
+    download_guid $gtex_filename $dos_guid $2 $3 $retry_counter
     echo "Number of files processed: $line_counter"
-    
+    line_counter=$((line_counter+=1))
 done < $1
+
+# cat $1 | parallel download_guid 
+# #parallel --colsep '\t' download_guid {1} {2} {3} {4} :::: $1
