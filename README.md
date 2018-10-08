@@ -27,7 +27,23 @@ Clone the authentication script (from master) from [here](https://github.com/rpw
 ```bash
 python example.py $scope_bdbag $pers_uuid
 ```
-and follow the directions. From the resulting JSON file copy the value of the `access_token` to `token_bdbag`. Then repeat the same using `$scope_results`. Now you have the tokens needed.
+and follow the directions. From the resulting JSON file, which resides in 
+`~/.globus-native-app/1b0dc9d3-0a2b-4000-8bd6-90fb6a79be86/`
 
+copy the value of the `access_token` to `token_bdbag`. Then repeat the same using `$scope_results`. Now you have the tokens needed.
+
+### Download BDBag
+Assign the URL to the BDBag to a shell variable named `bdbag_url` and run
+```bash
+wget -L -H "Authorization: Bearer $token_bdbag" $bdbag_url
+```
+
+### Using Mike D'Arcy's `bdbag`
+(as of 2018-10-08)
+(`bdbag`)[https://github.com/fair-research/bdbag/tree/dev_branch_1_5] can now download the bag, unzip it, and then download the CRAM the URL in `fetch.txt` points to. Suppose shell variable `bag_uri` holds the URI to the BDBag. Then do 
+```bash
+bdbag --materialize $bag_url
+```
+to achieve this.
 
 
