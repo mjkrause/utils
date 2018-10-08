@@ -37,7 +37,7 @@ wget -L -H "Authorization: Bearer $token_bdbag" $bdbag_url
 
 ### Using Mike D'Arcy's `bdbag`
 (as of 2018-10-08)
-Once you have the two tokens make `~/.bdbag/keychain.json` look like so
+The above can be cut short by using the `bdbag` package. Once you have the two tokens make `~/.bdbag/keychain.json` look like so
 ```JSON[
   {
     "uri": "https://bags.fair-research.org/",
