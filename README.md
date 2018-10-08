@@ -40,6 +40,27 @@ wget -L -H "Authorization: Bearer $token_bdbag" $bdbag_url
 
 ### Using Mike D'Arcy's `bdbag`
 (as of 2018-10-08)
+Once you have the two tokens make `~/.bdbag/keychain.json` look like so
+```JSON[
+  {
+    "uri": "https://bags.fair-research.org/",
+    "auth_type": "bearer-token",
+    "auth_params": {
+      "token": "<bag_token>",
+      "allow_redirects_with_token": "True"
+    }
+  },
+  {
+    "uri": "https://results.fair-research.org/",
+    "auth_type": "bearer-token",
+    "auth_params": {
+      "token": "<results_token>",
+      "allow_redirects_with_token": "True"
+    }
+  }
+]
+```
+
 [`bdbag`](https://github.com/fair-research/bdbag/tree/dev_branch_1_5) can now download the bag, unzip it, and then download the CRAM the URL in `fetch.txt` points to. Suppose shell variable `bag_url` holds the URI to the BDBag. Then do 
 ```bash
 bdbag --materialize $bag_url
