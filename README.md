@@ -40,7 +40,7 @@ wget -L -H "Authorization: Bearer $token_bdbag" $bdbag_url
 
 ### Using Mike D'Arcy's `bdbag`
 (as of 2018-10-08)
-(`bdbag`)[https://github.com/fair-research/bdbag/tree/dev_branch_1_5] can now download the bag, unzip it, and then download the CRAM the URL in `fetch.txt` points to. Suppose shell variable `bag_uri` holds the URI to the BDBag. Then do 
+[`bdbag`](https://github.com/fair-research/bdbag/tree/dev_branch_1_5) can now download the bag, unzip it, and then download the CRAM the URL in `fetch.txt` points to. Suppose shell variable `bag_uri` holds the URI to the BDBag. Then do 
 ```bash
 bdbag --materialize $bag_url
 ```
