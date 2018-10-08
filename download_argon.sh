@@ -8,25 +8,16 @@
 # EXAMPLE:
 #  download_argon.sh "https://bags.fair-research.org/15374771912446_1_15379605364218.outputs.bdbag.zip"
 #
-# You need two tokens to download the data files: one to download the
-# zipped BDBag, and another to download the actual CRAM file. First,
-# source .venv3 in this directory.
-#
-# For the bag token run
-#   python oauth_cli_login/example.py "https://auth.globus.org/scopes/898e3aae-b8a3-4be2-993b-1cf30c663b84/https" d76263f4-d723-41d8-add7-7840ec71bea8
-#
-# For the results token:
-#   python oauth_cli_login/example.py "https://auth.globus.org/scopes/2ca3c24c-af4d-4d0b-b5b0-38d03ff8e68d/https" d76263f4-d723-41d8-add7-7840ec71bea8
-#
-# Run the first command. It returns a JSON and the path where that JSON
-# is stored. Copy that JSON to the present directory, and rename it as the
-# second command will save it using the same UUID. Do the same with the
-# JSON returned from the second command.
-#
-# Once you have both token, copy them into keychain.json. Then run the script.
+# Once you have both token, copy them into mykeychain.json. Then run the script.
 #
 # RUNNING WITH GNU parallel
 # ~$ find <first_few_characters>* | parallel ./../utils/download_argon.sh {1}
+#
+# ALTERNATIVE TO USING THIS SCRIPT
+# As of 2018-10-08 you can use
+#   ~$ bdbag --materialize $bag_url
+# to download and unzip the BDBag, and to download the CRAM into its
+# data directory. (you can also use parallel with it)
 
 usage="$(basename "$0") [-h] [arg1] -- downloads CRAM and CRAI files from Team Argon (Globus)
 
